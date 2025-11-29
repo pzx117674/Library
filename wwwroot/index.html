@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library API Tester</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">Library API Tester</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <ul class="nav nav-tabs mb-4" id="mainTabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="showSection('authors')">Autorzy</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('books')">Ksiazki</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('copies')">Egzemplarze</a>
+            </li>
+        </ul>
+
+        <!-- AUTORZY -->
+        <div id="authors" class="section">
+            <div class="card mb-4">
+                <div class="card-header">Dodaj autora</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="authorFirstName" placeholder="Imie">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" id="authorLastName" placeholder="Nazwisko">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary" onclick="createAuthor()">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Lista autorow
+                    <button class="btn btn-sm btn-secondary" onclick="loadAuthors()">Odswiez</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Imie</th>
+                                <th>Nazwisko</th>
+                                <th>Ksiazki</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="authorsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- KSIAZKI -->
+        <div id="books" class="section" style="display:none;">
+            <div class="card mb-4">
+                <div class="card-header">Dodaj ksiazke</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="bookTitle" placeholder="Tytul">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" id="bookYear" placeholder="Rok">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="bookISBN" placeholder="ISBN">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="bookAuthorId"></select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" onclick="createBook()">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        Lista ksiazek
+                        <select class="form-select form-select-sm d-inline-block ms-2" style="width:200px;" id="filterAuthorId" onchange="loadBooks()">
+                            <option value="">-- Wszyscy autorzy --</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-sm btn-secondary" onclick="loadBooks()">Odswiez</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tytul</th>
+                                <th>Rok</th>
+                                <th>ISBN</th>
+                                <th>Autor</th>
+                                <th>Dostepne</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EGZEMPLARZE -->
+        <div id="copies" class="section" style="display:none;">
+            <div class="card mb-4">
+                <div class="card-header">Dodaj egzemplarz</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="copyInventory" placeholder="Nr inwentarzowy">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="copyCondition" placeholder="Stan">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="copyBookId"></select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="copyAvailable">
+                                <option value="true">Dostepny</option>
+                                <option value="false">Niedostepny</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary" onclick="createCopy()">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Lista egzemplarzy
+                    <button class="btn btn-sm btn-secondary" onclick="loadCopies()">Odswiez</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nr inwentarzowy</th>
+                                <th>Ksiazka</th>
+                                <th>Stan</th>
+                                <th>Dostepnosc</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="copiesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESPONSE -->
+        <div class="card mt-4">
+            <div class="card-header">Odpowiedz API</div>
+            <div class="card-body">
+                <pre id="responseBox" class="bg-light p-3 border" style="max-height:200px;overflow:auto;">Brak odpowiedzi...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+
+        function showSection(name) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-link').forEach(t => t.classList.remove('active'));
+            document.getElementById(name).style.display = 'block';
+            event.target.classList.add('active');
+            
+            if (name === 'authors') loadAuthors();
+            if (name === 'books') { loadAuthorsForSelect(); loadBooks(); }
+            if (name === 'copies') { loadBooksForSelect(); loadCopies(); }
+        }
+
+        async function apiCall(method, endpoint, data = null) {
+            const options = { method, headers: { 'Content-Type': 'application/json' } };
+            if (data) options.body = JSON.stringify(data);
+            try {
+                const response = await fetch(API_BASE + endpoint, options);
+                const text = await response.text();
+                let json; try { json = JSON.parse(text); } catch { json = text; }
+                document.getElementById('responseBox').textContent = JSON.stringify(json, null, 2);
+                return { ok: response.ok, data: json };
+            } catch (err) {
+                document.getElementById('responseBox').textContent = 'Error: ' + err.message;
+                return { ok: false };
+            }
+        }
+
+        // AUTORZY
+        async function loadAuthors() {
+            const result = await apiCall('GET', '/authors');
+            if (result.ok) {
+                document.getElementById('authorsTableBody').innerHTML = result.data.map(a => `
+                    <tr>
+                        <td>${a.id}</td>
+                        <td>${a.firstName}</td>
+                        <td>${a.lastName}</td>
+                        <td>${a.bookCount}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editAuthor(${a.id},'${a.firstName}','${a.lastName}')">Edytuj</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAuthor(${a.id})">Usun</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function createAuthor() {
+            const firstName = document.getElementById('authorFirstName').value;
+            const lastName = document.getElementById('authorLastName').value;
+            if (!firstName || !lastName) { alert('Wypelnij pola!'); return; }
+            await apiCall('POST', '/authors', { firstName, lastName });
+            document.getElementById('authorFirstName').value = '';
+            document.getElementById('authorLastName').value = '';
+            loadAuthors();
+        }
+
+        async function editAuthor(id, firstName, lastName) {
+            const newFirst = prompt('Imie:', firstName);
+            const newLast = prompt('Nazwisko:', lastName);
+            if (newFirst && newLast) {
+                await apiCall('PUT', `/authors/${id}`, { firstName: newFirst, lastName: newLast });
+                loadAuthors();
+            }
+        }
+
+        async function deleteAuthor(id) {
+            if (confirm('Usunac?')) {
+                await apiCall('DELETE', `/authors/${id}`);
+                loadAuthors();
+            }
+        }
+
+        // KSIAZKI
+        async function loadAuthorsForSelect() {
+            const result = await apiCall('GET', '/authors');
+            if (result.ok) {
+                const opts = result.data.map(a => `<option value="${a.id}">${a.firstName} ${a.lastName}</option>`).join('');
+                document.getElementById('bookAuthorId').innerHTML = opts;
+                document.getElementById('filterAuthorId').innerHTML = '<option value="">-- Wszyscy --</option>' + opts;
+            }
+        }
+
+        async function loadBooks() {
+            const authorId = document.getElementById('filterAuthorId')?.value;
+            const endpoint = authorId ? `/books?authorId=${authorId}` : '/books';
+            const result = await apiCall('GET', endpoint);
+            if (result.ok) {
+                document.getElementById('booksTableBody').innerHTML = result.data.map(b => `
+                    <tr>
+                        <td>${b.id}</td>
+                        <td>${b.title}</td>
+                        <td>${b.publicationYear}</td>
+                        <td>${b.isbn || '-'}</td>
+                        <td>${b.author ? b.author.firstName + ' ' + b.author.lastName : '-'}</td>
+                        <td>${b.availableCopies}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editBook(${b.id})">Edytuj</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBook(${b.id})">Usun</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function createBook() {
+            const title = document.getElementById('bookTitle').value;
+            const publicationYear = parseInt(document.getElementById('bookYear').value);
+            const isbn = document.getElementById('bookISBN').value || null;
+            const authorId = parseInt(document.getElementById('bookAuthorId').value);
+            if (!title || !publicationYear || !authorId) { alert('Wypelnij pola!'); return; }
+            await apiCall('POST', '/books', { title, publicationYear, isbn, authorId });
+            document.getElementById('bookTitle').value = '';
+            document.getElementById('bookYear').value = '';
+            document.getElementById('bookISBN').value = '';
+            loadBooks();
+        }
+
+        async function editBook(id) {
+            const result = await apiCall('GET', `/books/${id}`);
+            if (!result.ok) return;
+            const b = result.data;
+            const title = prompt('Tytul:', b.title);
+            const year = prompt('Rok:', b.publicationYear);
+            const isbn = prompt('ISBN:', b.isbn || '');
+            const authorId = prompt('ID autora:', b.authorId);
+            if (title && year && authorId) {
+                await apiCall('PUT', `/books/${id}`, { title, publicationYear: parseInt(year), isbn: isbn || null, authorId: parseInt(authorId) });
+                loadBooks();
+            }
+        }
+
+        async function deleteBook(id) {
+            if (confirm('Usunac?')) {
+                await apiCall('DELETE', `/books/${id}`);
+                loadBooks();
+            }
+        }
+
+        // EGZEMPLARZE
+        async function loadBooksForSelect() {
+            const result = await apiCall('GET', '/books');
+            if (result.ok) {
+                document.getElementById('copyBookId').innerHTML = result.data.map(b => `<option value="${b.id}">${b.title}</option>`).join('');
+            }
+        }
+
+        async function loadCopies() {
+            const result = await apiCall('GET', '/bookcopies');
+            if (result.ok) {
+                document.getElementById('copiesTableBody').innerHTML = result.data.map(c => `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td>${c.inventoryNumber}</td>
+                        <td>${c.book ? c.book.title : '-'}</td>
+                        <td>${c.condition || '-'}</td>
+                        <td><span class="badge ${c.isAvailable ? 'bg-success' : 'bg-danger'}">${c.isAvailable ? 'Tak' : 'Nie'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editCopy(${c.id})">Edytuj</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCopy(${c.id})">Usun</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function createCopy() {
+            const inventoryNumber = document.getElementById('copyInventory').value;
+            const condition = document.getElementById('copyCondition').value || null;
+            const bookId = parseInt(document.getElementById('copyBookId').value);
+            const isAvailable = document.getElementById('copyAvailable').value === 'true';
+            if (!inventoryNumber || !bookId) { alert('Wypelnij pola!'); return; }
+            await apiCall('POST', '/bookcopies', { inventoryNumber, condition, bookId, isAvailable });
+            document.getElementById('copyInventory').value = '';
+            document.getElementById('copyCondition').value = '';
+            loadCopies();
+        }
+
+        async function editCopy(id) {
+            const result = await apiCall('GET', `/bookcopies/${id}`);
+            if (!result.ok) return;
+            const c = result.data;
+            const inventoryNumber = prompt('Nr inwentarzowy:', c.inventoryNumber);
+            const condition = prompt('Stan:', c.condition || '');
+            const isAvailable = confirm('Dostepny?');
+            const bookId = prompt('ID ksiazki:', c.bookId);
+            if (inventoryNumber && bookId) {
+                await apiCall('PUT', `/bookcopies/${id}`, { inventoryNumber, condition: condition || null, isAvailable, bookId: parseInt(bookId) });
+                loadCopies();
+            }
+        }
+
+        async function deleteCopy(id) {
+            if (confirm('Usunac?')) {
+                await apiCall('DELETE', `/bookcopies/${id}`);
+                loadCopies();
+            }
+        }
+
+        loadAuthors();
+    </script>
+</body>
+</html>
